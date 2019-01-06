@@ -8,6 +8,7 @@
 
 import React, {Component} from 'react';
 import {FlatList, StyleSheet, Text, View, Dimensions, TouchableOpacity} from 'react-native';
+import ListItem from './components/list-item';
 
 const deviceHeight: number = Dimensions.get( 'window' ).height;
 const deviceWidth: number = Dimensions.get( 'window' ).width;
@@ -46,6 +47,7 @@ export default class App extends Component<Props> {
 
     this.addItem = this.addItem.bind(this);
     this.removeItem = this.removeItem.bind(this);
+    this.renderItem = this.renderItem.bind(this);
   }
 
   addItem(item) {
@@ -53,12 +55,12 @@ export default class App extends Component<Props> {
 
     this.state.data.map((savedItem) => {
 
-      if (item.item.color !== savedItem.color) {
+      if (item.color !== savedItem.color) {
         data.push(savedItem);
       } else{
         data.push({
-          color: item.item.color,
-          count: item.item.count + 1,
+          color: item.color,
+          count: item.count + 1,
         });
       }
     });
@@ -70,16 +72,26 @@ export default class App extends Component<Props> {
 
     this.state.data.map((savedItem) => {
 
-      if (item.item.color !== savedItem.color) {
+      if (item.color !== savedItem.color) {
         data.push(savedItem);
       } else{
         data.push({
-          color: item.item.color,
-          count: item.item.count - 1,
+          color: item.color,
+          count: item.count - 1,
         });
       }
     });
     this.setState({data: data});
+  }
+
+  renderItem(item) {
+    return(
+      <ListItem
+      item={item.item}
+      addItem={this.addItem}
+      removeItem={this.removeItem}
+      />
+    );
   }
 
   render() {
@@ -88,44 +100,8 @@ export default class App extends Component<Props> {
         <FlatList
           ref={ this.captureRef }
           data={ this.state.data }
-          extraData={ this.state.data }
           keyExtractor={ item => item.color }
-          renderItem={ (item) => {
-            console.log('Rendering item with color:', item.item.color);
-            return(
-              <View style={[styles.listContainer, {
-                backgroundColor: item.item.color,
-                }]}>
-                <View style={ styles.counterContainer }>
-                  <TouchableOpacity
-                    underlayColor={ 'transparent' }
-                    style={ styles.plusMinusButton }
-                    onPress={ () => {
-                      this.removeItem(item);
-                   } }
-                  >
-                  <Text style={ styles.plusMinusSign }>-</Text>
-
-                  </TouchableOpacity>
-                  <Text
-                    style={ styles.itemQuantity }
-                    numberOfLines={ 1 }
-                  >
-                    { item.item.count }
-                  </Text>
-                  <TouchableOpacity
-                    underlayColor={ 'transparent' }
-                    style={ styles.plusMinusButton }
-                    onPress={ () => {
-                      this.addItem(item);
-                     } }
-                  >
-                    <Text style={ styles.plusMinusSign }>+</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            );
-            } }
+          renderItem={ this.renderItem }
         />
       </View>
     );
@@ -138,37 +114,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
-  },
-  listContainer: {
-    height: 250,
-    width: deviceWidth,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  plusMinusButton: {
-    borderWidth: 1,
-    width: 24,
-    height: 24,
-    borderColor: 'white',
-    borderRadius: 13,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  plusMinusSign: {
-    color: 'black',
-    padding: 0,
-    alignSelf: 'center',
-    paddingBottom: 2,
-  },
-  itemQuantity: {
-    textAlign: 'center',
-    paddingHorizontal: 5,
-  },
-  counterContainer: {
-    marginTop: 3,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
   },
 });
