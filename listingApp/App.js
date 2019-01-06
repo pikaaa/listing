@@ -10,9 +10,6 @@ import React, {Component} from 'react';
 import {FlatList, StyleSheet, Text, View, Dimensions, TouchableOpacity} from 'react-native';
 import ListItem from './components/list-item';
 
-const deviceHeight: number = Dimensions.get( 'window' ).height;
-const deviceWidth: number = Dimensions.get( 'window' ).width;
-
 const data = [
   {
     color: 'pink',
